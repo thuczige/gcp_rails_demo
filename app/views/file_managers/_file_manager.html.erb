@@ -1,0 +1,14 @@
+<div id="<%= dom_id file_manager %>">
+  <p>
+    <strong>File name:</strong>
+    <%= file_manager.file_name %>
+  </p>
+
+  <p>
+    <strong>Content:</strong>
+    <div style="white-space: pre-line; display: inline-block;">
+      <%= raw file_manager.content %>
+    </div>
+  </p>
+
+</div>

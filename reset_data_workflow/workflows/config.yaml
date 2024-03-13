@@ -1,0 +1,64 @@
+main:
+  params: [args]
+  steps:
+    - assign_value:
+        assign:
+          - project_id: zigexn-vn-sandbox
+          - job_location: asia-northeast1
+          - exec_step: ${args.exec_step}
+
+    - execution_step:
+        try:
+          steps:
+            - switch_import:
+                switch:
+                  - condition: ${exec_step == "only_remove"}
+                    steps:
+                      - call_only_remove:
+                          call: remove
+                          args:
+                            project_id: ${project_id}
+                            job_location: ${job_location}
+                  - condition: ${exec_step == "only_sync"}
+                    steps:
+                      - call_only_sync:
+                          call: sync
+                          args:
+                            project_id: ${project_id}
+                            job_location: ${job_location}
+                  - condition: ${exec_step == "remove_and_syn"}
+                    steps:
+                      - call_remove:
+                          call: remove
+                          args:
+                            project_id: ${project_id}
+                            job_location: ${job_location}
+                      - call_sync:
+                          call: sync
+                          args:
+                            project_id: ${project_id}
+                            job_location: ${job_location}
+        except:
+          as: e
+          steps:
+            - raiseError:
+                raise: ${e}
+
+remove:
+  params: [project_id, job_location]
+  steps:
+    - upsert:
+        call: googleapis.run.v1.namespaces.jobs.run
+        args:
+          name: ${"namespaces/" + project_id + "/jobs/remove-data-on-production"}
+          location: ${job_location}
+        result: job_execution
+sync:
+  params: [project_id, job_location]
+  steps:
+    - upsert:
+        call: googleapis.run.v1.namespaces.jobs.run
+        args:
+          name: ${"namespaces/" + project_id + "/jobs/sync-data-on-production"}
+          location: ${job_location}
+        result: job_execution

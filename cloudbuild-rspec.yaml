@@ -1,0 +1,25 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'docker-build'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        docker pull gcr.io/$PROJECT_ID/myapp:testing || exit 0
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '--network=cloudbuild'
+      - '--cache-from=gcr.io/$PROJECT_ID/myapp:testing'
+      - '--tag=gcr.io/$PROJECT_ID/myapp:testing'
+      - '--file=./Dockerfile.test'
+      - '.'
+  - name: 'docker/compose'
+    args:
+      - '--file=docker-compose-ci.yml'
+      - 'run'
+      - 'rspec'
+images:
+  - 'gcr.io/$PROJECT_ID/myapp:testing'
+options:
+  logging: CLOUD_LOGGING_ONLY

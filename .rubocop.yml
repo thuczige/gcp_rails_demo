@@ -1,0 +1,140 @@
+
+AllCops:
+  NewCops: enable
+  Exclude:
+    - 'vendor/**/*'
+    - 'test/fixtures/**/*'
+    - 'db/**/*'
+    - 'bin/**/*'
+    - 'log/**/*'
+    - 'tmp/**/*'
+    - 'app/views/**/*'
+    - 'config/**/*'
+    - 'app/graphql/**/*'
+    - 'node_modules/**/*'
+    - 'Gemfile'
+    - test/test_helper.rb
+    - app/helpers/application_helper.rb
+    - app/mailers/application_mailer.rb
+    - app/models/application_record.rb
+    - Rakefile
+
+# Style Cops
+
+Style/Documentation:
+  Description: "Document classes and non-namespace modules."
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Description: >-
+    Add the frozen_string_literal comment to the top of files
+    to help transition from Ruby 2.3.0 to Ruby 3.0.
+  Enabled: false
+
+Style/InlineComment:
+  Description: 'Avoid inline comments.'
+  Enabled: false
+
+Style/StringLiterals:
+  Description: 'Checks if uses of quotes match the configured preference.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#consistent-string-literals'
+  EnforcedStyle: single_quotes
+  SupportedStyles:
+    - single_quotes
+    - double_quotes
+  Enabled: true
+
+Style/TrailingCommaInArguments:
+  Description: 'Checks for trailing comma in argument lists.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-trailing-array-commas'
+  EnforcedStyleForMultiline: comma
+  SupportedStylesForMultiline:
+    - comma
+    - consistent_comma
+    - no_comma
+  Enabled: true
+
+Style/TrailingCommaInArrayLiteral:
+  Description: 'Checks for trailing comma in array literals.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-trailing-array-commas'
+  EnforcedStyleForMultiline: comma
+  SupportedStylesForMultiline:
+    - comma
+    - consistent_comma
+    - no_comma
+  Enabled: true
+
+Style/RescueStandardError:
+  Enabled: false
+
+# Layout Cops
+
+Layout/ArgumentAlignment:
+  Exclude:
+    - 'config/initializers/*'
+
+Layout/FirstArgumentIndentation:
+  Enabled: false
+
+Layout/DotPosition:
+  Description: 'Checks the position of the dot in multi-line method calls.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#consistent-multi-line-chains'
+  Enabled: false
+
+Layout/LineLength:
+  Description: 'Limit lines to 150 characters.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#80-character-limits'
+  Max: 150
+
+Layout/MultilineOperationIndentation:
+  Description: 'Checks indentation of binary operations that span more than one line.'
+  Enabled: true
+  EnforcedStyle: indented
+
+Layout/MultilineMethodCallIndentation:
+  Description: 'Checks indentation of method calls with the dot operator that span more than one line.'
+  Enabled: true
+  EnforcedStyle: indented
+
+Layout/IndentationStyle:
+  Description: 'Checks Indentation method is consistent.'
+  Enabled: true
+  IndentationWidth: 2
+  EnforcedStyle: spaces
+
+# Metrics Cops
+
+Metrics/ClassLength:
+  Enabled: false
+
+Metrics/MethodLength:
+  Enabled: false
+
+Metrics/AbcSize:
+  Enabled: false
+
+Metrics/BlockLength:
+  Enabled: false
+
+Metrics/ModuleLength:
+  Enabled: false
+
+# Naming Cops
+Naming/VariableNumber:
+  Enabled: false
+
+Naming/MemoizedInstanceVariableName:
+  Enabled: false
+
+Style/MapToHash:
+  Enabled: false
+
+Style/HashSyntax:
+  Enabled: false
+
+Metrics/CyclomaticComplexity:
+  Enabled: false
+
+Metrics/PerceivedComplexity:
+  Enabled: false
+

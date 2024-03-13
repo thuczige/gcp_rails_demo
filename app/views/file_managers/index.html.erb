@@ -1,0 +1,28 @@
+<p style="color: green"><%= notice %></p>
+
+<h1>File managers</h1>
+
+<div id="file_managers">
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">File Name</th>
+        <th scope="col">Show</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @file_managers.each do |file_manager| %>
+        <tr>
+          <th scope="row"><%= file_manager.id %></th>
+          <td><%= file_manager.file_name %></td>
+          <td>
+            <%= link_to "Show this file manager", file_manager %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<%= link_to "New file manager", new_file_manager_path %>

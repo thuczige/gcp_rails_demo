@@ -1,0 +1,39 @@
+# secret key sample, you can use 'rake secret' to get new key
+SECRET_KEY_BASE: 'bddb2f4c0adf82e2b44e0f94d1900b4fa6de450e57a7c9bc6af30e81b654b77dd4c667513ecc378846886f09edd7d7d8032689f59cd152b7e36de760d469fc02'
+
+# config db on development
+PRIMARY_DB_USERNAME: root
+PRIMARY_DB_PASSWORD: '123456'
+PRIMARY_DB_PORT: '3306'
+PRIMARY_DB_HOST: db
+PRIMARY_DB_NAME: gcp_demo_development
+# for production
+# PRIMARY_DB_USERNAME: avnadmin
+# PRIMARY_DB_PASSWORD: 'AVNS_V6IkJbWbPQ13ZcH-Lrl'
+# PRIMARY_DB_PORT: '21318'
+# PRIMARY_DB_HOST: mysql-201a8e2c-zigexn-c22d.a.aivencloud.com
+# PRIMARY_DB_NAME: huytp_production
+
+# config for redis
+REDIS_SESSION_URL: redis://redis:6379/1
+REDIS_CACHE_URL: redis://redis:6379/2
+# for production
+# REDIS_HOST: redis-3fb976d5-zigexn-c22d.a.aivencloud.com
+# REDIS_PORT: 21319
+# REDIS_AUTH_STRING: AVNS_36cs6sxO8myLIZzsvAl
+# REDIS_USERNAME: default
+
+# config for gcp
+GCP_PROJECT_ID: zigexn-vn-sandbox
+GCP_TASK_QUEUE: zigexn-vn-sandbox-default
+REGION: 'asia-northeast1'
+GCP_TASK_SERVICE_EMAIL: 'zigexn-vn-sandbox-batch-invoker@zigexn-vn-sandbox.iam.gserviceaccount.com'
+
+# only local
+GOOGLE_APPLICATION_CREDENTIALS: '/root/sa_adc.json'
+GCP_BATCH_HOST: 'http://web:8080'
+GCP_TASK_HOST: 'gcloudtasks:8123'
+
+
+
+

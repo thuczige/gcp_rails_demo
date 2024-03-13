@@ -1,0 +1,29 @@
+version: '3.5'
+services:
+  redis:
+    image: redis:6.0
+    ports:
+      - '6379:6379'
+  rspec:
+    image: gcr.io/zigexn-vn-sandbox/myapp:testing
+    command: bash -c "bundle exec rails db:migrate RAILS_ENV=test && bundle exec rspec"
+    depends_on:
+      - redis
+    environment:
+      REDIS_CACHE_URL: 'redis://redis:6379/0'
+      REDIS_SESSION_URL: 'redis://redis:6379/1'
+  rubocop:
+    image: gcr.io/zigexn-vn-sandbox/myapp:testing
+    command: bash -c "bundle exec rubocop"
+    depends_on:
+      - redis
+    environment:
+      REDIS_CACHE_URL: 'redis://redis:6379/0'
+      REDIS_SESSION_URL: 'redis://redis:6379/1'
+
+networks:
+  default:
+    external:
+      name: cloudbuild
+volumes:
+  mysql-data:

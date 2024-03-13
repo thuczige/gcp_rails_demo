@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @file_manager %>
+
+<div>
+  <%= link_to "Edit this file manager", edit_file_manager_path(@file_manager) %> |
+  <%= link_to "Back to file managers", file_managers_path %>
+
+  <%= button_to "Destroy this file manager", @file_manager, method: :delete %>
+</div>

@@ -1,0 +1,29 @@
+default: &default
+  adapter: mysql2
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  timeout: 5000
+  reconnect: true
+  encoding: utf8mb4
+  collation: utf8mb4_bin
+  username: <%= ENV.fetch('PRIMARY_DB_USERNAME', 'root') %>
+  password: <%= ENV.fetch('PRIMARY_DB_PASSWORD', '123456') %>
+  host: <%= ENV['PRIMARY_DB_HOST'] %>
+  port: <%= ENV['PRIMARY_DB_PORT'] %>
+  database: <%= ENV['PRIMARY_DB_NAME'] %>
+
+development:
+  <<: *default
+
+test:
+  adapter: sqlite3
+  database: db/test.sqlite3
+  pool: 5
+  timeout: 5000
+
+staging:
+  <<: *default
+  socket: <%= ENV['PRIMARY_DB_SOCKET'] %>
+
+production:
+  <<: *default
+  socket: <%= ENV['PRIMARY_DB_SOCKET'] %>
