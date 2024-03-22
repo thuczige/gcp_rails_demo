@@ -1,1 +1,121 @@
-#please write this cloudbuild to deploy to cloud run
+steps:
+- name: gcr.io/kaniko-project/executor:v1.9.0
+  args:
+  - --build-arg=RAILS_ENV=${_RAILS_ENV}
+  - --build-arg=SECRET_KEY_BASE=$$SECRET_KEY_BASE
+
+  - --build-arg=PRIMARY_DB_USERNAME=$$PRIMARY_DB_USERNAME
+  - --build-arg=PRIMARY_DB_PASSWORD=$$PRIMARY_DB_PASSWORD
+  - --build-arg=PRIMARY_DB_PORT=$$PRIMARY_DB_PORT
+  - --build-arg=PRIMARY_DB_HOST=$$PRIMARY_DB_HOST
+  - --build-arg=PRIMARY_DB_NAME=${_PRIMARY_DB_NAME}
+
+  - --build-arg=REDIS_HOST=$$REDIS_HOST
+  - --build-arg=REDIS_PORT=$$REDIS_PORT
+  - --build-arg=REDIS_AUTH_STRING=$$REDIS_AUTH_STRING
+  - --build-arg=REDIS_USERNAME=$$REDIS_USERNAME
+
+  - --build-arg=GCP_PROJECT_ID=$PROJECT_ID
+  - --build-arg=GCP_TASK_QUEUE=$$GCP_TASK_QUEUE
+  - --build-arg=REGION=${_REGION}
+  - --build-arg=GCP_TASK_SERVICE_EMAIL=$$GCP_TASK_SERVICE_EMAIL
+  - --destination=${_GCR_IMAGE}
+  - --cache=true
+  - --cache-ttl=36h
+  secretEnv: ['SECRET_KEY_BASE',
+              'PRIMARY_DB_USERNAME',
+              'PRIMARY_DB_PASSWORD',
+              'PRIMARY_DB_PORT',
+              'PRIMARY_DB_HOST',
+              'REDIS_HOST',
+              'REDIS_PORT',
+              'REDIS_AUTH_STRING',
+              'REDIS_USERNAME',
+              'GCP_TASK_QUEUE',
+              'GCP_TASK_SERVICE_EMAIL']
+
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: gcloud
+  args: ['beta', 'run', 'deploy', '${_SERVICE_NAME}',
+        '--image', '${_GCR_IMAGE}',
+        '--add-cloudsql-instances', '${_CLOUD_SQL}',
+        '-${_ALLOW_UNAUTHENTICATED}-allow-unauthenticated',
+        '-${_CPU_THROTTLING}-cpu-throttling',
+        '--execution-environment', '${_EXECUTION_ENVIRONMENT}',
+        '--vpc-connector', '${_VPC_CONNECTOR}',
+        '--ingress', '${_INGRESS}',
+        '--vpc-egress', '${_VPC_EGRESS}',
+        '--region', '${_REGION}',
+        '--cpu', '${_CPU}',
+        '--memory', '${_MEMORY}',
+        '--concurrency', '${_CONCURRENCY}',
+        '--min-instances', '${_MIN_INSTANCES}',
+        '--max-instances', '${_MAX_INSTANCES}',
+        '--platform', 'managed',
+        '--revision-suffix', '${_REVISION_SUFFIX}',
+        '--set-env-vars', 'RAILS_ENV=${_RAILS_ENV}',
+        '--set-env-vars', 'GCP_PROJECT_ID=$PROJECT_ID',
+        '--set-env-vars', 'REGION=${_REGION}',
+        '--set-env-vars', 'PRIMARY_DB_NAME=${_PRIMARY_DB_NAME}',
+
+        '--set-secrets', 'SECRET_KEY_BASE=demo_secret_key_base:latest',
+        '--set-secrets', 'PRIMARY_DB_USERNAME=demo_primary_db_username:latest',
+        '--set-secrets', 'PRIMARY_DB_PASSWORD=demo_primary_db_password:latest',
+        '--set-secrets', 'PRIMARY_DB_PORT=demo_primary_db_port:latest',
+        '--set-secrets', 'PRIMARY_DB_HOST=demo_primary_db_host:latest',
+
+        '--set-secrets', 'REDIS_HOST=demo_redis_host:latest',
+        '--set-secrets', 'REDIS_PORT=demo_redis_port:latest',
+        '--set-secrets', 'REDIS_AUTH_STRING=demo_redis_auth_string:latest',
+        '--set-secrets', 'REDIS_USERNAME=demo_redis_username:latest',
+
+        '--set-secrets', 'GCP_TASK_QUEUE=demo_gcp_task_queue:latest',
+        '--set-secrets', 'GCP_TASK_SERVICE_EMAIL=demo_gcp_task_service_email:latest']
+
+# Production subtitutions
+substitutions:
+  _RAILS_ENV: 'production'
+  _REGION: 'asia-northeast1'
+  _SERVICE_NAME: 'thucpt-gcp-demo-web'
+  _GCR_IMAGE: 'gcr.io/${PROJECT_ID}/${REPO_NAME}/${_SERVICE_NAME}'
+  _VPC_CONNECTOR: 'nc-gcp-demo-vpc'
+  _VPC_EGRESS: 'private-ranges-only'
+  _CPU_THROTTLING: '-no'
+  _EXECUTION_ENVIRONMENT: 'gen2'
+  _CPU: '1'
+  _MEMORY: '512Mi'
+  _REVISION_SUFFIX: '${_PR_NUMBER}-${SHORT_SHA}'
+  _CONCURRENCY: '80'
+  _MIN_INSTANCES: '0'
+  _MAX_INSTANCES: 'default'
+  _ALLOW_UNAUTHENTICATED: ''
+  _INGRESS: 'all'
+  _PRIMARY_DB_NAME: 'thucpt_production'
+
+availableSecrets:
+  secretManager:
+  - versionName: 'projects/$PROJECT_ID/secrets/demo_secret_key_base/versions/latest'
+    env: 'SECRET_KEY_BASE'
+  - versionName: 'projects/$PROJECT_ID/secrets/demo_primary_db_username/versions/latest'
+    env: 'PRIMARY_DB_USERNAME'
+  - versionName: 'projects/$PROJECT_ID/secrets/demo_primary_db_password/versions/latest'
+    env: 'PRIMARY_DB_PASSWORD'
+  - versionName: 'projects/$PROJECT_ID/secrets/demo_primary_db_port/versions/latest'
+    env: 'PRIMARY_DB_PORT'
+  - versionName: 'projects/$PROJECT_ID/secrets/demo_primary_db_host/versions/latest'
+    env: 'PRIMARY_DB_HOST'
+  - versionName: 'projects/$PROJECT_ID/secrets/demo_redis_host/versions/latest'
+    env: 'REDIS_HOST'
+  - versionName: 'projects/$PROJECT_ID/secrets/demo_redis_port/versions/latest'
+    env: 'REDIS_PORT'
+  - versionName: 'projects/$PROJECT_ID/secrets/demo_redis_auth_string/versions/latest'
+    env: 'REDIS_AUTH_STRING'
+  - versionName: 'projects/$PROJECT_ID/secrets/demo_redis_username/versions/latest'
+    env: 'REDIS_USERNAME'
+  - versionName: 'projects/$PROJECT_ID/secrets/demo_gcp_task_queue/versions/latest'
+    env: 'GCP_TASK_QUEUE'
+  - versionName: 'projects/$PROJECT_ID/secrets/demo_gcp_task_service_email/versions/latest'
+    env: 'GCP_TASK_SERVICE_EMAIL'
+timeout: 2400s
+options:
+  logging: CLOUD_LOGGING_ONLY
